@@ -39,6 +39,10 @@ contract MyEpicGame is ERC721 {
     // map for address & token ID
     mapping(address => uint256) public nftHolders;
 
+    // events
+    event CharacterNFTMinted(address sender, uint256 tokenId, uint256 characterIndex);
+    event AttackComplete(uint newBossHp, uint newPlayerHp);
+
     constructor(
         string[] memory characterNames,
         string[] memory characterImageURIs,
@@ -98,6 +102,7 @@ contract MyEpicGame is ERC721 {
         // mapping address & ID
         nftHolders[msg.sender] = newItemId;
         _tokenIds.increment();
+        emit CharacterNFTMinted(msg.sender, newItemId, _characterIndex);
     }
 
     // get tokenURI function
@@ -128,6 +133,7 @@ contract MyEpicGame is ERC721 {
         return output;
     }
 
+    // attack logic 
     function attackBoss() public {
         // get TokenID
         uint256 nftTokenIdOfPlayer = nftHolders[msg.sender];
@@ -152,5 +158,29 @@ contract MyEpicGame is ERC721 {
         // show play & Boss hp
         console.log("Player attacked boss. New boss hp: %s", bigBoss.hp);
 	    console.log("Boss attacked player. New player hp: %s\n", player.hp);
+        emit AttackComplete(bigBoss.hp, player.hp);
+    }
+
+    // check user's address has NFT
+    function checkIfUserHasNFT() public view returns (CharacterAttributes memory) {
+        // get token ID
+        uint256 userNftTokenId = nftHolders[msg.sender];
+        // check hold NFT
+        if(userNftTokenId > 0) {
+            return nftHolderAttributes[userNftTokenId];
+        } else {
+            CharacterAttributes memory emptyStruct;
+            return emptyStruct;
+        }
+    }
+
+    // get all character data
+    function getAllDefaultCharacters() public view returns (CharacterAttributes[] memory) {
+        return defaultCharacters;
+    }
+
+    // get bigboss data
+    function getBisBoss() public view returns (BigBoss memory) {
+        return bigBoss;
     }
 }

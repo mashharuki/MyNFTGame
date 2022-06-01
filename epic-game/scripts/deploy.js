@@ -15,10 +15,11 @@
     );
     const nftGame = await gameContract.deployed();
 
-    console.log("Contract deployed to:", nftGame.address);
+    console.log("nftGame.address:", nftGame.address);
 
     // キャラクターNFTを発行していく
     let txn;
+    /*
     txn = await gameContract.mintCharacterNFT(0);
     // トランザクションブロードキャスト
     await txn.wait();
@@ -28,13 +29,22 @@
     // トランザクションブロードキャスト
     await txn.wait();
     console.log("Minted NFT #2");
+       
 
     txn = await gameContract.mintCharacterNFT(2);
     // トランザクションブロードキャスト
     await txn.wait();
     console.log("Minted NFT #3");
 
-    console.log("Done deploying and minting!");
+    // 1回目の攻撃
+    txn = await gameContract.attackBoss();
+    await txn.wait();
+    // 2回目の攻撃
+    txn = await gameContract.attackBoss();
+    await txn.wait();
+
+    console.log("Done deploying and minting and attack!");
+     */
 };
 
 const runMain = async () => {
