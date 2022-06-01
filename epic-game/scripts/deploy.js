@@ -1,7 +1,7 @@
 /**
  * テスト用のスクリプト
  */
-const main = async () => {
+ const main = async () => {
     const gameContractFactory = await hre.ethers.getContractFactory("MyEpicGame");
     const gameContract = await gameContractFactory.deploy(
         ["ZORO", "NAMI", "USOPP"], 
@@ -19,19 +19,22 @@ const main = async () => {
 
     // キャラクターNFTを発行していく
     let txn;
+    txn = await gameContract.mintCharacterNFT(0);
+    // トランザクションブロードキャスト
+    await txn.wait();
+    console.log("Minted NFT #1");
+
+    txn = await gameContract.mintCharacterNFT(1);
+    // トランザクションブロードキャスト
+    await txn.wait();
+    console.log("Minted NFT #2");
+
     txn = await gameContract.mintCharacterNFT(2);
     // トランザクションブロードキャスト
     await txn.wait();
-    // URIを取得する。
-    let returnedTokenUri = await gameContract.tokenURI(1);
-    console.log("Token URI:", returnedTokenUri);
+    console.log("Minted NFT #3");
 
-    // 1回目の攻撃
-    txn = await gameContract.attackBoss();
-    await txn.wait();
-    // 2回目の攻撃
-    txn = await gameContract.attackBoss();
-    await txn.wait();
+    console.log("Done deploying and minting!");
 };
 
 const runMain = async () => {
