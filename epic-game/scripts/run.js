@@ -12,6 +12,16 @@ const main = async () => {
     const nftGame = await gameContract.deployed();
 
     console.log("Contract deployed to:", nftGame.address);
+
+    // キャラクターNFTを発行していく
+    let txn;
+    txn = await gameContract.mintCharacterNFT(2);
+    // トランザクションブロードキャスト
+    await txn.wait();
+    // URIを取得する。
+    let returnedTokenUri = await gameContract.tokenURI(1);
+    console.log("Token URI:", returnedTokenUri);
+
 };
 
 const runMain = async () => {
