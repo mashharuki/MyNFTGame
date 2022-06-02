@@ -49,6 +49,7 @@ const SelectCharacter = ({ setCharacterNFT }) => {
                 transformCharacterData(characterData)
               );
         
+              // console.log("chracters:", nftCharacters);
               // ミント可能なすべてのNFTキャラクターの状態を設定します。
               setCharacters(nftCharacters);
             } catch (error) {
@@ -89,7 +90,7 @@ const SelectCharacter = ({ setCharacterNFT }) => {
     }, [gameContract]);
 
     // キャラクターNFTのデータを表示するメソッド
-    const renderChracters = () => {
+    const renderChracters = () => 
         characters.map((character, index) => (
             <div className="character-item" key={character.name}>
               <div className="name-container">
@@ -103,7 +104,7 @@ const SelectCharacter = ({ setCharacterNFT }) => {
               >{`Mint ${character.name}`}</button>
             </div>
         ));
-    };
+     
 
     // キャラクターNFTを発行するためのメソッド
     const mintCharacterNFTAction = (characterId) => async () => {
