@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import twitterLogo from './assets/twitter-logo.svg';
 import './App.css';
+import SelectCharacter from "./Components/SelectCharacter";
 
 // Constants 
 const TWITTER_HANDLE = 'HARUKI05758694';
@@ -12,6 +13,7 @@ const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
 const App = () => {
   // ステート変数
   const [currentAccount, setCurrentAccount] = useState(null);
+  const [characterNFT, setCharacterNFT] = useState(null);
 
   // check user have metamask
   const checkIfWalletIsConnected = async () => {
@@ -58,6 +60,28 @@ const App = () => {
     }
   };
 
+  /**
+   * ログイン状態によってConnect Walletボタンを表示を切り替えるメソッド
+   */
+  const renderContent = () => {
+    // ウォレットのログイン状態を確認する。
+    if (!currentAccount) {
+      return (
+        <div className="connect-wallet-container">
+          <img src="https://i.imgur.com/yMocj5x.png" alt="Pikachu" />
+          <button
+            className="cta-button connect-wallet-button"
+            onClick={connectWalletAction}
+          >
+            Connect Wallet to Get Started
+          </button>
+        </div>
+      );
+    } else if (currentAccount && !characterNFT) {
+      return <SelectCharacter setCharacterNFT={setCharacterNFT} />;
+    }
+  };
+
   useEffect(() => {
     checkIfWalletIsConnected();
   }, []);
@@ -69,15 +93,7 @@ const App = () => {
         <div className="header-container">
         <p className="header gradient-text">⚡️ METAVERSE GAME ⚡️</p>
           <p className="sub-text">プレイヤーと協力してボスを倒そう✨</p>
-          <div className="connect-wallet-container">
-            <img src="https://i.imgur.com/yMocj5x.png" alt="Pikachu" />
-            <button
-              className="cta-button connect-wallet-button"
-              onClick={connectWalletAction}
-            >
-              Connect Wallet To Get Started
-            </button>
-          </div>
+          {renderContent()}
         </div>
         <div className="footer-container">
           <img alt="Twitter Logo" className="twitter-logo" src={twitterLogo} />
