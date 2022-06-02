@@ -20,12 +20,12 @@ const Arena = ({ characterNFT, setCharacterNFT }) => {
     if (ethereum) {
       const provider = new ethers.providers.Web3Provider(ethereum);
       const signer = provider.getSigner();
-      const gameContract = new ethers.Contract(
+      const contract = new ethers.Contract(
         CONTRACT_ADDRESS,
         myEpicGame.abi,
         signer
       );
-      setGameContract(gameContract);
+      setGameContract(contract);
     } else {
       console.log("Ethereum object not found");
     }
@@ -35,7 +35,7 @@ const Arena = ({ characterNFT, setCharacterNFT }) => {
   useEffect(() => {
     // ボスのデータを取得する。
     const fetchBoss = async () => {
-        const bossTxn = await gameContract.getBigBoss();
+        const bossTxn = await gameContract.getBisBoss();
         console.log("Boss:", bossTxn);
         setBoss(transformCharacterData(bossTxn));
     };
