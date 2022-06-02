@@ -3,6 +3,7 @@ import "./SelectCharacter.css";
 import { ethers } from "ethers";
 import { CONTRACT_ADDRESS, transformCharacterData } from "../../constants";
 import myEpicGame from "../../artifacts/contracts/MyEpicGame.sol/MyEpicGame.json";
+import LoadingIndicator from "../LoadingIndicator";
 
 /**
  * SelectCharacterコンポーネント
@@ -11,6 +12,7 @@ import myEpicGame from "../../artifacts/contracts/MyEpicGame.sol/MyEpicGame.json
 const SelectCharacter = ({ setCharacterNFT }) => {
     const [characters, setCharacters] = useState([]);
     const [gameContract, setGameContract] = useState(null);
+    const [mintingCharacter, setMintingCharacter] = useState(false);
 
     /**
      * 副作用フック
@@ -110,14 +112,17 @@ const SelectCharacter = ({ setCharacterNFT }) => {
     const mintCharacterNFTAction = (characterId) => async () => {
         try {
           if (gameContract) {
+            setMintingCharacter(true);
             console.log("Minting character in progress...");
             // mintCharacterNFTメソッドを呼び出す。
             const mintTxn = await gameContract.mintCharacterNFT(characterId);
             await mintTxn.wait();
             console.log("mintTxn:", mintTxn);
+            setMintingCharacter(false);
           }
         } catch (error) {
           console.warn("MintCharacterAction Error:", error);
+          setMintingCharacter(false);
         }
     };
 
@@ -128,6 +133,14 @@ const SelectCharacter = ({ setCharacterNFT }) => {
                 <div className="character-grid">
                     {renderChracters()}
                 </div>
+            )}
+            {mintingCharacter && (
+              <div className="loading">
+                <div className="indicator">
+                  <LoadingIndicator />
+                  <p>Minting In Progress...</p>
+                </div>
+              </div>
             )}
         </div>
     );

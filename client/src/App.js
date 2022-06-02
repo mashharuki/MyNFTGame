@@ -11,6 +11,7 @@ import {
   transformCharacterData 
 } from "./constants";
 import { ethers } from "ethers";
+import LoadingIndicator from "./Components/LoadingIndicator";
 
 /**
  * Appコンポーネント
@@ -19,6 +20,7 @@ const App = () => {
   // ステート変数
   const [currentAccount, setCurrentAccount] = useState(null);
   const [characterNFT, setCharacterNFT] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   // check network DI
   const checkNetwork = async () => {
@@ -39,6 +41,7 @@ const App = () => {
     try {
       if (!ethereum) {
         console.log("Make sure you have MetaMask!");
+        setIsLoading(false);
         return;
       } else {
         console.log("We have the ethereum object", ethereum);
@@ -57,6 +60,7 @@ const App = () => {
     } catch(error) {
       console.error(error);
     }
+    setIsLoading(false);
   };
 
   /**
@@ -84,6 +88,9 @@ const App = () => {
    * ログイン状態によってConnect Walletボタンを表示を切り替えるメソッド
    */
   const renderContent = () => {
+    if (isLoading) {
+      return <LoadingIndicator />;
+    }
     // ウォレットのログイン状態を確認する。
     if (!currentAccount) {
       return (
@@ -105,6 +112,7 @@ const App = () => {
   };
 
   useEffect(() => {
+    setIsLoading(true);
     checkIfWalletIsConnected();
   }, []);
 
@@ -128,6 +136,8 @@ const App = () => {
       } else {
         console.log("No character NFT found");
       }
+      // ローディング状態をfalseにする。
+      setIsLoading(false);
     };
     // アカウントが接続されている時のみNFTデータを取得する。
     if (currentAccount) {
