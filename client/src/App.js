@@ -3,7 +3,12 @@ import twitterLogo from './assets/twitter-logo.svg';
 import './App.css';
 import SelectCharacter from "./Components/SelectCharacter";
 import myEpicGame from "./artifacts/contracts/MyEpicGame.sol/MyEpicGame.json";
-import { CONTRACT_ADDRESS, TWITTER_HANDLE, TWITTER_LINK } from "./constants";
+import { 
+  CONTRACT_ADDRESS, 
+  TWITTER_HANDLE, 
+  TWITTER_LINK, 
+  transformCharacterData 
+} from "./constants";
 import { ethers } from "ethers";
 
 /**
@@ -100,7 +105,33 @@ const App = () => {
     checkIfWalletIsConnected();
   }, []);
 
-  
+  // NFTのデータを取得する副作用フック
+  useEffect(() => {
+    const fetchNFTMetadata = async() => {
+      console.log("Checking for Character NFT on address:", currentAccount);
+      // コントラクト機能を使うための準備
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const gameContract = new ethers.Contract(
+        CONTRACT_ADDRESS,
+        myEpicGame.abi,
+        signer
+      );
+      // checkIfUserHasNFTメソッドを呼び出す。
+      const txn = await gameContract.checkIfUserHasNFT();
+      if (txn.name) {
+        console.log("User has character NFT");
+        setCharacterNFT(transformCharacterData(txn));
+      } else {
+        console.log("No character NFT found");
+      }
+    };
+    // アカウントが接続されている時のみNFTデータを取得する。
+    if (currentAccount) {
+      console.log("CurrentAccount:", currentAccount);
+      fetchNFTMetadata();
+    }
+  }, [currentAccount]);
 
   return (
     <div className="App">
