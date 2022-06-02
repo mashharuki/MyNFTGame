@@ -25,11 +25,9 @@ module.exports = {
   etherscan: {
     apiKey: process.env.ETHERSCAN_APIKEY
   },
-  /*
   paths: {                         
     artifacts: './../client/src/artifacts',  
   },
-  */
   networks: {
     goerli: {
       url: API_URL_KEY,

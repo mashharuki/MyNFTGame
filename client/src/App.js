@@ -2,10 +2,9 @@ import React, { useEffect, useState } from 'react';
 import twitterLogo from './assets/twitter-logo.svg';
 import './App.css';
 import SelectCharacter from "./Components/SelectCharacter";
-
-// Constants 
-const TWITTER_HANDLE = 'HARUKI05758694';
-const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
+import myEpicGame from "./artifacts/contracts/MyEpicGame.sol/MyEpicGame.json";
+import { CONTRACT_ADDRESS, TWITTER_HANDLE, TWITTER_LINK } from "./constants";
+import { ethers } from "ethers";
 
 /**
  * Appコンポーネント
@@ -14,6 +13,19 @@ const App = () => {
   // ステート変数
   const [currentAccount, setCurrentAccount] = useState(null);
   const [characterNFT, setCharacterNFT] = useState(null);
+
+  // check network DI
+  const checkNetwork = async () => {
+    try {
+      if (window.ethereum.networkVersion !== "4") {
+        alert("Rinkeby Test Network に接続してください!");
+      } else {
+        console.log("Rinkeby に接続されています.");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   // check user have metamask
   const checkIfWalletIsConnected = async () => {
@@ -48,13 +60,15 @@ const App = () => {
     try {
       const { ethereum } = window;
       if (!ethereum) {
-        alert("Get MetaMask!");
+        alert("Please download MetaMask!");
         return;
       }
+      checkIfWalletIsConnected();
       // ウォレットアドレスに対してアクセスをリクエストしています。
       const accounts = await ethereum.request({method: "eth_requestAccounts",});
       console.log("Connected", accounts[0]);
       setCurrentAccount(accounts[0]);
+      checkNetwork();
     } catch (error) {
       console.log(error);
     }
@@ -86,6 +100,7 @@ const App = () => {
     checkIfWalletIsConnected();
   }, []);
 
+  
 
   return (
     <div className="App">
