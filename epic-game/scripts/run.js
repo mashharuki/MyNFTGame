@@ -32,6 +32,17 @@ const main = async () => {
     // 2回目の攻撃
     txn = await gameContract.attackBoss();
     await txn.wait();
+
+    // デフォルトで選べるキャラクターを追加する。
+    txn = await gameContract.addChracterData("test", "https://i.imgur.com/TZEhCTX.png", 100, 50);
+    await txn.wait();
+    // キャラクターNFTを発行していく(4番目)
+    txn = await gameContract.mintCharacterNFT(3);
+    // トランザクションブロードキャスト
+    await txn.wait();
+    // URIを取得する。
+    returnedTokenUri = await gameContract.tokenURI(4);
+    console.log("Token URI:", returnedTokenUri);
 };
 
 const runMain = async () => {

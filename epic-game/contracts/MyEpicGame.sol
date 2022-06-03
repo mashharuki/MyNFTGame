@@ -38,10 +38,13 @@ contract MyEpicGame is ERC721 {
     mapping(uint256 => CharacterAttributes) public nftHolderAttributes;
     // map for address & token ID
     mapping(address => uint256) public nftHolders;
+    // map for owner address 
+    mapping(address => bool) public owners;
 
     // events
     event CharacterNFTMinted(address sender, uint256 tokenId, uint256 characterIndex);
     event AttackComplete(uint newBossHp, uint newPlayerHp);
+    event AddChracterData(string characterName, string characterImageURI, uint characterHp, uint characterAttackDmg);
 
     constructor(
         string[] memory characterNames,
@@ -81,6 +84,8 @@ contract MyEpicGame is ERC721 {
             console.log("Done initializing %s w/ HP %s, img %s", character.name, character.hp, character.imageURI);
         }
         _tokenIds.increment();
+        // add owner address status
+        owners[msg.sender] = true;
     }
 
     // mint function
@@ -182,5 +187,32 @@ contract MyEpicGame is ERC721 {
     // get bigboss data
     function getBisBoss() public view returns (BigBoss memory) {
         return bigBoss;
+    }
+
+    // add defaultChracterdata
+    function addChracterData(
+        string memory characterName,
+        string memory characterImageURI,
+        uint characterHp,
+        uint characterAttackDmg
+    ) public {
+        // check msg.sender's role
+        require(owners[msg.sender], "this method must be called by owner's address!!");
+        // check Hp and AttackDmg
+        require(characterHp <= 500, "characterHp must be less than 300!!");
+        require(characterAttackDmg <= 200, "characterAttackDmg must be less than 200!!");
+        // get index
+        uint256 index = defaultCharacters.length;
+        // create array
+        defaultCharacters.push(CharacterAttributes({
+                                    characterIndex: index,
+                                    name: characterName,
+                                    imageURI: characterImageURI,
+                                    hp: characterHp,
+                                    maxHp: characterHp,
+                                    attackDamage: characterAttackDmg
+                                }));
+        // emit event
+        emit AddChracterData(characterName, characterImageURI, characterHp, characterAttackDmg);
     }
 }
