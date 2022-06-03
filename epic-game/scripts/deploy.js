@@ -5,7 +5,11 @@
     const gameContractFactory = await hre.ethers.getContractFactory("MyEpicGame");
     const gameContract = await gameContractFactory.deploy(
         ["ZORO", "NAMI", "USOPP"], 
-        ["https://i.imgur.com/TZEhCTX.png",  "https://i.imgur.com/WVAaMPA.png", "https://i.imgur.com/pCMZeiM.png",],
+        [
+            "QmQ59urX6G91McKCha59vL7j9JsACCx9ofZKWJ5CT5cEYd",  
+            "QmNSa7MR5hcbJS1sHzx5AJ3HhHubChMYJhGGve7kJupii3", 
+            "QmQ59urX6G91McKCha59vL7j9JsACCx9ofZKWJ5CT5cEYd",
+        ],
         [100, 200, 300], 
         [100, 50, 25] ,
         "CROCODILE",
