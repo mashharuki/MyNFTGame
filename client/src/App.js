@@ -151,7 +151,7 @@ const App = () => {
       <div className="container">
         <div className="header-container">
         <p className="header gradient-text">⚡️ METAVERSE GAME ⚡️</p>
-          <p className="sub-text">プレイヤーと協力してボスを倒そう✨</p>
+          <p className="sub-text">複数のキャラクターを駆使してボスを倒そう✨</p>
           {renderContent()}
         </div>
         <div className="footer-container">

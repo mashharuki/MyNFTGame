@@ -6,7 +6,7 @@
     const gameContract = await gameContractFactory.deploy(
         ["ZORO", "NAMI", "USOPP"], 
         [
-            "QmQ59urX6G91McKCha59vL7j9JsACCx9ofZKWJ5CT5cEYd",  
+            "QmPNEmaiWSaQhWYkjKBWctX5jwZ4t9WEPgssDNFwUT1RBx",  
             "QmNSa7MR5hcbJS1sHzx5AJ3HhHubChMYJhGGve7kJupii3", 
             "QmQ59urX6G91McKCha59vL7j9JsACCx9ofZKWJ5CT5cEYd",
         ],

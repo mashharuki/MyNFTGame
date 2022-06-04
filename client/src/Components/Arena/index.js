@@ -4,6 +4,7 @@ import { CONTRACT_ADDRESS, transformCharacterData } from "../../constants";
 import myEpicGame from "../../artifacts/contracts/MyEpicGame.sol/MyEpicGame.json";
 import "./Arena.css";
 import LoadingIndicator from "../LoadingIndicator";
+import Mint from "./../Mint";
 
 /**
  * Arenaコンポーネント
@@ -15,10 +16,26 @@ const Arena = ({ characterNFT, setCharacterNFT }) => {
   const [boss, setBoss] = useState(null);
   const [attackState, setAttackState] = useState("");
   const [showToast, setShowToast] = useState(false);
+  const [hpZeroFlg, setHpZeroFlg] = useState(false);
+  const [characters, setCharacters] = useState([]);
+  const [mintFlg, setMintFlg] = useState(false);
 
   // 副作用フック
   useEffect(() => {
     const { ethereum } = window;
+
+    // 発行済みNFTデータを取得するメソッド
+    const fetchNFTs =  async (contract) => {
+      const fetchNFTs = await contract.getAllPlayers();
+      console.log("NFTs:", fetchNFTs);
+      // フロントエンド側で扱いやすい様にデータを加工して配列に詰める。
+      const nfts = fetchNFTs.map((nft) =>
+        transformCharacterData(nft)
+      );
+      // ステート変数更新
+      setCharacters(nfts);
+    }
+
     if (ethereum) {
       const provider = new ethers.providers.Web3Provider(ethereum);
       const signer = provider.getSigner();
@@ -28,6 +45,8 @@ const Arena = ({ characterNFT, setCharacterNFT }) => {
         signer
       );
       setGameContract(contract);
+      // 全ての発行済みキャラクターNFTを取得する。
+      fetchNFTs(contract);
     } else {
       console.log("Ethereum object not found");
     }
@@ -56,6 +75,10 @@ const Arena = ({ characterNFT, setCharacterNFT }) => {
         setCharacterNFT((prevState) => {
           return { ...prevState, hp: playerHp };
         });
+        // HPが0になった時にフラグを有効化する。
+        if (playerHp <= 0) {
+          setHpZeroFlg(true);
+        }
     };
 
     if (gameContract) {
@@ -100,6 +123,23 @@ const Arena = ({ characterNFT, setCharacterNFT }) => {
     }
   };
 
+  /**
+   * HPが0になった時に処理されるコンポーネント
+   */
+  const renderButton = () => {
+    return (
+      <button className="mint-button" onClick={setMintFlg(true)}>
+          新しいキャラクターNFTを発行する
+      </button>
+    );
+  }
+
+  /*
+  const renderMint = () => {
+    return <Mint/>;
+  }
+  */
+
   return (
     <div className="arena-container">
       {boss && characterNFT && (
@@ -110,19 +150,19 @@ const Arena = ({ characterNFT, setCharacterNFT }) => {
       {boss && (
         <div className="boss-container">
             <div className={`boss-content ${attackState}`}>
-            <h2>🔥 {boss.name} 🔥</h2>
-            <div className="image-content">
-                <img src={boss.imageURI} alt={`Boss ${boss.name}`} />
-                <div className="health-bar">
-                <progress value={boss.hp} max={boss.maxHp} />
-                <p>{`${boss.hp} / ${boss.maxHp} HP`}</p>
-                </div>
-            </div>
+              <h2>🔥 {boss.name} 🔥</h2>
+              <div className="image-content">
+                  <img src={boss.imageURI} alt={`Boss ${boss.name}`} />
+                  <div className="health-bar">
+                    <progress value={boss.hp} max={boss.maxHp} />
+                    <p>{`${boss.hp} / ${boss.maxHp} HP`}</p>
+                  </div>
+              </div>
             </div>
             <div className="attack-container">
-            <button className="cta-button" onClick={runAttackAction}>
-                {`💥 Attack ${boss.name}`}
-            </button>
+              <button className="cta-button" onClick={runAttackAction}>
+                  {`💥 Attack ${boss.name}`}
+              </button>
             </div>
             {attackState === "attacking" && (
               <div className="loading-indicator">
@@ -132,12 +172,17 @@ const Arena = ({ characterNFT, setCharacterNFT }) => {
             )}
         </div>
         )}
-        {characterNFT && (
+        {hpZeroFlg && (
+          <div id="toast" className={showToast ? "zero-show" : ""}>
+            <div id="desc">{`You lose....`}</div>
+          </div>
+        )}
+        {characters && (
             <div className="players-container">
-                <div className="player-container">
-                <h2>Your Character</h2>
+              <div className="player-container">
+                <h2>Your Character Team</h2>
                 <div className="player">
-                    <div className="image-content">
+                  <div className="image-content">
                     <h2>{characterNFT.name}</h2>
                     <img
                         src={`https://cloudflare-ipfs.com/ipfs/${characterNFT.imageURI}`}
@@ -146,14 +191,16 @@ const Arena = ({ characterNFT, setCharacterNFT }) => {
                         <progress value={characterNFT.hp} max={characterNFT.maxHp} />
                         <p>{`${characterNFT.hp} / ${characterNFT.maxHp} HP`}</p>
                     </div>
-                    </div>
-                    <div className="stats">
+                  </div>
+                  <div className="stats">
                     <h4>{`⚔️ Attack Damage: ${characterNFT.attackDamage}`}</h4>
-                    </div>
+                  </div>
                 </div>
-                </div>
+              </div>
             </div>
         )}
+        {hpZeroFlg && renderButton()}
+        {/*mintFlg && renderMint()*/}
     </div>
   );
 };

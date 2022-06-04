@@ -157,6 +157,8 @@ contract MyEpicGame is ERC721 {
         // Boss's attack
         if (player.hp < bigBoss.attackDamage) {
             player.hp = 0;
+            // player's NFT burn
+            _burn(nftTokenIdOfPlayer);
         } else {
             player.hp = player.hp - bigBoss.attackDamage;
         }
@@ -187,6 +189,19 @@ contract MyEpicGame is ERC721 {
     // get bigboss data
     function getBisBoss() public view returns (BigBoss memory) {
         return bigBoss;
+    }
+
+    // get all players data
+    function getAllPlayers() public view returns (CharacterAttributes[] memory playerNFTs) {
+        // get current token count
+        uint256 counts = _tokenIds.current();
+        // CharacterAttributes[] memory playerNFTs = new CharacterAttributes[](counts);
+        // 全てのNFTホルダーに対してNFTデータを取得するような処理を入れる。
+        for(uint i = 1; i <= counts; i += 1) {
+            // NFTホルダー毎のトークンIDからNFTメタデータを取得して配列に詰める。
+            playerNFTs[i] = nftHolderAttributes[i];
+        }
+        return playerNFTs;
     }
 
     // add defaultChracterdata
