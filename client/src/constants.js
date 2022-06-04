@@ -1,6 +1,6 @@
 // アプリで使用する定数を定義したファイル
 
-const CONTRACT_ADDRESS = "0x90bE6f494bbf4a6a02BAc00cEb4b15093A9CB79a";
+const CONTRACT_ADDRESS = "0xeb7431F22868544E2f7AbfbD2Ac6bd691942045D";
 const TWITTER_HANDLE = 'HARUKI05758694';
 const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
 
