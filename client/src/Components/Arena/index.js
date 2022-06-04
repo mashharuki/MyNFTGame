@@ -4,7 +4,6 @@ import { CONTRACT_ADDRESS, transformCharacterData } from "../../constants";
 import myEpicGame from "../../artifacts/contracts/MyEpicGame.sol/MyEpicGame.json";
 import "./Arena.css";
 import LoadingIndicator from "../LoadingIndicator";
-import Mint from "./../Mint";
 
 /**
  * Arenaコンポーネント
@@ -134,12 +133,6 @@ const Arena = ({ characterNFT, setCharacterNFT }) => {
     );
   }
 
-  /*
-  const renderMint = () => {
-    return <Mint/>;
-  }
-  */
-
   return (
     <div className="arena-container">
       {boss && characterNFT && (
@@ -174,7 +167,7 @@ const Arena = ({ characterNFT, setCharacterNFT }) => {
         )}
         {hpZeroFlg && (
           <div id="toast" className={showToast ? "zero-show" : ""}>
-            <div id="desc">{`You lose....`}</div>
+            <div id="desc">You lose....</div>
           </div>
         )}
         {characters && (
@@ -199,8 +192,6 @@ const Arena = ({ characterNFT, setCharacterNFT }) => {
               </div>
             </div>
         )}
-        {hpZeroFlg && renderButton()}
-        {/*mintFlg && renderMint()*/}
     </div>
   );
 };
